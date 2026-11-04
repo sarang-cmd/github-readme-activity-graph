@@ -16,6 +16,11 @@ app.get('/graph', handlers.getGraph);
 
 app.get('/data', handlers.getData);
 
-app.listen(port, (): void => {
-    console.log(`Server is Running on Port ${port}`);
-});
+// Only listen when running locally; on Vercel the exported app is invoked as a serverless function.
+if (!process.env.VERCEL) {
+    app.listen(port, (): void => {
+        console.log(`Server is Running on Port ${port}`);
+    });
+}
+
+export default app;
