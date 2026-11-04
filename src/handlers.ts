@@ -26,9 +26,10 @@ export class Handlers {
 
             res.status(200).send(finalGraph);
         } catch (error) {
+            console.error('getGraph error:', error);
             res.setHeader('Cache-Control', 'no-store, max-age=0');
             res.set('Content-Type', 'image/svg+xml');
-            res.send(invalidUserSvg('Something unexpected happened 💥'));
+            res.send(invalidUserSvg(`Something unexpected happened 💥 ${String(error && (error as any).message ? (error as any).message : error)}`));
         }
     }
 
