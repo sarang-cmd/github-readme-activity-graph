@@ -48,6 +48,18 @@ export const graphSvg = (props: GraphArgs) => `
     </svg>
 `;
 
+const escapeXml = (value: string): string =>
+    value.replace(/[&<>"']/g, (character) => {
+        const entities: Record<string, string> = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&apos;',
+        };
+        return entities[character];
+    });
+
 export const invalidUserSvg = (data: string) => `
     <svg
         width="400"
@@ -63,6 +75,6 @@ export const invalidUserSvg = (data: string) => `
         <rect xmlns="http://www.w3.org/2000/svg" data-testid="card_bg" id="cardBg" x="0.5"
         y="0.5" rx="4.5" height="100%" stroke="#E4E2E2" fill-opacity="1" width="100%"
         fill="#44475a" stroke-opacity="1"/>
-        <text x="20" y="100" fill="#bd93f9">${data}</text>
+        <text x="20" y="100" fill="#bd93f9">${escapeXml(data)}</text>
     </svg>
 `;

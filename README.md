@@ -20,6 +20,9 @@ by **Ashutosh Dwivedi**. Every meaningful line of code, every feature, every
 theme, and the whole idea behind this project belong to him and the original
 contributors. I did not write this. I am not claiming credit for it.
 
+This fork does include a few small hosting and maintenance adaptations; they
+are listed below and do not change who created the original project.
+
 ### Why does this fork exist at all?
 
 The hosted service behind the original project stopped working for me, and the
@@ -28,11 +31,27 @@ original and I don't like the new ones. So instead of switching to a different
 alternate fork, I spun up my own deployment from this fork so I could keep using
 the thing I actually enjoy.
 
-That's the entire reason this repository exists. Nothing more, nothing less.
+That's why this repository exists: to keep a personal deployment of the
+original project available, not to replace or rebrand the upstream project.
 
-If you want the real thing, the real author, or the real project, go to the
-original repository linked above. This fork exists only so my own deployment
-keeps running.
+### What changed in this fork?
+
+The graph features and themes remain the upstream project's. Fork-specific
+changes are focused on hosting and maintenance:
+
+- **Vercel hosting:** the Express app can run as a serverless function, with
+  Vercel build and route configuration for the personal deployment.
+- **Serverless module resolution:** `node-chartist` is loaded through package
+  resolution rather than fragile paths into `node_modules`.
+- **GitHub API diagnostics:** authentication, rate-limit, and other API failures
+  are reported distinctly instead of all being described as an incorrect
+  username.
+- **Safer error handling:** fallback SVG text is XML-escaped, and request logs
+  omit Axios request details that could contain authorization headers.
+
+These changes do not alter the origin or ownership of the core graph project.
+For the upstream project and its full history, see the original repository
+linked above.
 
 ---
 
