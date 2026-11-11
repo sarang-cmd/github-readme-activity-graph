@@ -49,6 +49,52 @@ export class Fetcher {
         });
     }
 
+    private graphQLErrorMessage(error: { type?: string; message?: string }): string {
+        const type = error.type || 'UNKNOWN';
+        const message = error.message || '';
+
+        if (type === 'RATE_LIMITED' || /rate limit/i.test(message)) {
+            return '💥 GitHub API rate limit exceeded. Please try again later.';
+        }
+        if (/bad credentials|unauthenticated|unauthorized/i.test(message)) {
+            return 'GitHub rejected the configured TOKEN. It may be missing, expired, or revoked.';
+        }
+        if (/forbidden|permission|resource not accessible/i.test(message)) {
+            return 'GitHub denied access to contribution data. Check the configured TOKEN permissions.';
+        }
+        if (type === 'NOT_FOUND') {
+            return `GitHub could not resolve username "${this.username}" (NOT_FOUND).`;
+        }
+
+        return `GitHub GraphQL request failed (${type}). Check the configured TOKEN and Vercel runtime logs.`;
+    }
+
+    private requestErrorMessage(error: unknown): string {
+        const requestError = error as {
+            response?: { status?: number; data?: { message?: string } };
+            code?: string;
+        };
+        const status = requestError?.response?.status;
+        const apiMessage = requestError?.response?.data?.message || '';
+
+        if (status === 401) {
+            return 'GitHub rejected the configured TOKEN (HTTP 401). It may be expired or revoked.';
+        }
+        if (status === 403 && /rate limit/i.test(apiMessage)) {
+            return '💥 GitHub API rate limit exceeded. Please try again later.';
+        }
+        if (status === 403) {
+            return 'GitHub denied the request (HTTP 403). Check the configured TOKEN permissions.';
+        }
+        if (status) {
+            return `GitHub API request failed (HTTP ${status}).`;
+        }
+        if (requestError?.code) {
+            return `Could not connect to GitHub API (${requestError.code}).`;
+        }
+        return 'GitHub API request failed. Check the Vercel runtime logs.';
+    }
+
     public async fetchContributions(
         days: number,
         customFromDate?: string,
@@ -69,18 +115,13 @@ export class Fetcher {
         try {
             const apiResponse = await this.fetch(this.getGraphQLQuery(from, to));
 
-            if (apiResponse.data.errors) {
-                console.error('API Error: ', apiResponse.data.errors);
-                if (apiResponse.data.errors[0].type === 'RATE_LIMITED') {
-                    console.log('GraphQL Error: API rate limit exceeded');
-                    return '💥 API rate limit exceeded. Please deploy your own instance.';
-                } else {
-                    return `Can't fetch any contribution. Please check your username 😬`;
-                }
+            if (apiResponse.data.errors?.length) {
+                console.error('GitHub GraphQL errors:', apiResponse.data.errors);
+                return this.graphQLErrorMessage(apiResponse.data.errors[0]);
             } else if (apiResponse.data.data) {
-                if (apiResponse.data.data.user === null)
-                    return `Can't fetch any contribution. Please check your username 😬`;
-                else {
+                if (apiResponse.data.data.user === null) {
+                    return `GitHub returned no profile for "${this.username}". Check the login and configured TOKEN access.`;
+                } else {
                     const userData: UserDetails = {
                         contributions: [],
                         name: apiResponse.data.data.user.name,
@@ -117,8 +158,8 @@ export class Fetcher {
                 throw new Error('Unexpected API response structure');
             }
         } catch (error) {
-            console.log('error: ', error);
-            return `Can't fetch any contribution. Please check your username 😬`;
+            console.error('GitHub contribution request failed:', error);
+            return this.requestErrorMessage(error);
         }
     }
 }
