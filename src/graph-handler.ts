@@ -4,7 +4,7 @@ import { ParsedQs } from './interfaces/interface';
 import { invalidUserSvg } from './svgs';
 import { Utilities } from './utils';
 
-const SVG_CONTENT_TYPE = 'image/svg+xml; charset=utf-8';
+const SVG_CONTENT_TYPE = 'image/svg+xml';
 const ALLOWED_METHODS = 'GET, HEAD, OPTIONS';
 
 function getQuery(request: IncomingMessage): ParsedQs {
@@ -24,13 +24,10 @@ function sendSvg(
     cacheControl: string,
     headOnly: boolean,
 ): void {
-    const body = Buffer.from(svg, 'utf8');
-
     response.statusCode = 200;
     response.setHeader('Cache-Control', cacheControl);
     response.setHeader('Content-Type', SVG_CONTENT_TYPE);
-    response.setHeader('Content-Length', String(body.byteLength));
-    response.end(headOnly ? undefined : body);
+    response.end(headOnly ? undefined : svg);
 }
 
 export default async function graphHandler(
