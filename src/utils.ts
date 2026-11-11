@@ -172,6 +172,6 @@ export class Utilities {
 
     public setHttpHeader(res: Response, directivesAndAge: string): void {
         res.setHeader('Cache-Control', `${directivesAndAge}`);
-        res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
     }
 }

@@ -25,7 +25,7 @@ export class Handlers {
             }
 
             if (diagnosticMode === 'svg-static') {
-                res.setHeader('Content-Type', 'image/svg+xml');
+                res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
                 res.status(200);
                 res.end('<svg xmlns="http://www.w3.org/2000/svg"><text>ok</text></svg>');
                 return;
@@ -56,7 +56,7 @@ export class Handlers {
             }
 
             if (diagnosticMode === 'full-svg') {
-                res.setHeader('Content-Type', 'image/svg+xml');
+                res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
                 res.status(200);
                 res.end(finalGraph);
                 return;
@@ -122,7 +122,7 @@ export class Handlers {
             }
 
             res.setHeader('Cache-Control', 'no-store, max-age=0');
-            res.setHeader('Content-Type', 'image/svg+xml');
+            res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
             res.status(200);
             res.end(invalidUserSvg(`Something unexpected happened 💥 ${String(error && (error as any).message ? (error as any).message : error)}`));
         }
