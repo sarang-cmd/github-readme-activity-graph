@@ -25,9 +25,14 @@ export class Handlers {
             }
 
             if (diagnosticMode === 'svg-static') {
+                const svg = Buffer.from(
+                    '<svg xmlns="http://www.w3.org/2000/svg"><text>ok</text></svg>',
+                    'utf8',
+                );
                 res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+                res.setHeader('Content-Length', `${svg.byteLength}`);
                 res.status(200);
-                res.end('<svg xmlns="http://www.w3.org/2000/svg"><text>ok</text></svg>');
+                res.end(svg);
                 return;
             }
 
@@ -56,9 +61,11 @@ export class Handlers {
             }
 
             if (diagnosticMode === 'full-svg') {
+                const svg = Buffer.from(finalGraph, 'utf8');
                 res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+                res.setHeader('Content-Length', `${svg.byteLength}`);
                 res.status(200);
-                res.end(finalGraph);
+                res.end(svg);
                 return;
             }
 
@@ -91,8 +98,10 @@ export class Handlers {
             stage = 'set-response-headers';
             utils.setHttpHeader(res, header.maxAge);
             stage = 'send-svg';
+            const svg = Buffer.from(finalGraph, 'utf8');
+            res.setHeader('Content-Length', `${svg.byteLength}`);
             res.status(200);
-            res.end(finalGraph);
+            res.end(svg);
         } catch (error) {
             const graphError = error as {
                 name?: string;
@@ -121,10 +130,17 @@ export class Handlers {
                 return;
             }
 
+            const errorSvg = Buffer.from(
+                invalidUserSvg(
+                    `Something unexpected happened 💥 ${String(error && (error as any).message ? (error as any).message : error)}`,
+                ),
+                'utf8',
+            );
             res.setHeader('Cache-Control', 'no-store, max-age=0');
             res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+            res.setHeader('Content-Length', `${errorSvg.byteLength}`);
             res.status(200);
-            res.end(invalidUserSvg(`Something unexpected happened 💥 ${String(error && (error as any).message ? (error as any).message : error)}`));
+            res.end(errorSvg);
         }
     }
 
