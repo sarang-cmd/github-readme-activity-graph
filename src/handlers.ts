@@ -61,7 +61,8 @@ export class Handlers {
             stage = 'set-response-headers';
             utils.setHttpHeader(res, header.maxAge);
             stage = 'send-svg';
-            res.status(200).send(finalGraph);
+            res.status(200);
+            res.end(finalGraph);
         } catch (error) {
             const graphError = error as {
                 name?: string;
@@ -87,8 +88,9 @@ export class Handlers {
             }
 
             res.setHeader('Cache-Control', 'no-store, max-age=0');
-            res.set('Content-Type', 'image/svg+xml');
-            res.send(invalidUserSvg(`Something unexpected happened 💥 ${String(error && (error as any).message ? (error as any).message : error)}`));
+            res.setHeader('Content-Type', 'image/svg+xml');
+            res.status(200);
+            res.end(invalidUserSvg(`Something unexpected happened 💥 ${String(error && (error as any).message ? (error as any).message : error)}`));
         }
     }
 
