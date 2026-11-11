@@ -158,7 +158,14 @@ export class Fetcher {
                 throw new Error('Unexpected API response structure');
             }
         } catch (error) {
-            console.error('GitHub contribution request failed:', error);
+            const requestError = error as {
+                code?: string;
+                response?: { status?: number };
+            };
+            console.error('GitHub contribution request failed:', {
+                code: requestError?.code,
+                status: requestError?.response?.status,
+            });
             return this.requestErrorMessage(error);
         }
     }
