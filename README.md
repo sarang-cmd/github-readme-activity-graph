@@ -12,14 +12,16 @@
 
 ## ⚠️ Please read this first
 
-**This is a fork, not an original implementation.**
+**This is not my work. Not even a little bit.**
 
-This repository is based on
+This repository is a fork of the original
 [`Ashutosh00710/github-readme-activity-graph`](https://github.com/Ashutosh00710/github-readme-activity-graph)
-by **Ashutosh Dwivedi**. The graph generator, themes, core behavior, and original
-project idea come from him and the upstream contributors. This fork adds a few
-hosting and maintenance adaptations, documented below; it does not claim credit
-for the upstream work.
+by **Ashutosh Dwivedi**. Every meaningful line of code, every feature, every
+theme, and the whole idea behind this project belong to him and the original
+contributors. I did not write this. I am not claiming credit for it.
+
+This fork does include a few small hosting and maintenance adaptations; they
+are listed below and do not change who created the original project.
 
 ### Why does this fork exist at all?
 
