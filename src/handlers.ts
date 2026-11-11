@@ -24,6 +24,13 @@ export class Handlers {
                 return;
             }
 
+            if (diagnosticMode === 'svg-static') {
+                res.setHeader('Content-Type', 'image/svg+xml');
+                res.status(200);
+                res.end('<svg xmlns="http://www.w3.org/2000/svg"><text>ok</text></svg>');
+                return;
+            }
+
             stage = 'query-options';
             const utils = new Utilities(req.query);
 
@@ -38,6 +45,29 @@ export class Handlers {
 
             stage = 'graph-render';
             const { finalGraph, header } = await utils.buildGraph(fetchCalendarData);
+
+            if (diagnosticMode === 'full-svg-json') {
+                res.status(200).json({
+                    ok: true,
+                    svgBytes: Buffer.byteLength(finalGraph, 'utf8'),
+                    svg: finalGraph,
+                });
+                return;
+            }
+
+            if (diagnosticMode === 'full-svg') {
+                res.setHeader('Content-Type', 'image/svg+xml');
+                res.status(200);
+                res.end(finalGraph);
+                return;
+            }
+
+            if (diagnosticMode === 'full-text') {
+                res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+                res.status(200);
+                res.end(finalGraph);
+                return;
+            }
 
             if (diagnosticMode === 'full') {
                 res.status(200).json({
@@ -76,7 +106,11 @@ export class Handlers {
                 status: graphError?.response?.status,
             });
 
-            if (diagnosticMode === 'full' || diagnosticMode === 'send') {
+            if (
+                ['full', 'send', 'full-svg-json', 'full-svg', 'full-text', 'svg-static'].includes(
+                    diagnosticMode,
+                )
+            ) {
                 res.status(200).json({
                     ok: false,
                     stage,
