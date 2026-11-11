@@ -2,13 +2,21 @@
     "version": 2,
     "builds": [
         {
+            "src": "src/graph-handler.ts",
+            "use": "@vercel/node"
+        },
+        {
             "src": "src/main.ts",
             "use": "@vercel/node"
         }
     ],
     "routes": [
         {
-            "src": "/(.*)",
+            "src": "^/graph/?$",
+            "dest": "src/graph-handler.ts"
+        },
+        {
+            "src": "^/(.*)$",
             "dest": "src/main.ts"
         }
     ]
