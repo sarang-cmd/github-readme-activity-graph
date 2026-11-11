@@ -58,8 +58,9 @@ export class Handlers {
                 return;
             }
 
-            stage = 'response';
+            stage = 'set-response-headers';
             utils.setHttpHeader(res, header.maxAge);
+            stage = 'send-svg';
             res.status(200).send(finalGraph);
         } catch (error) {
             const graphError = error as {
@@ -74,7 +75,7 @@ export class Handlers {
                 status: graphError?.response?.status,
             });
 
-            if (diagnosticMode === 'full') {
+            if (diagnosticMode === 'full' || diagnosticMode === 'send') {
                 res.status(200).json({
                     ok: false,
                     stage,
