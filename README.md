@@ -12,13 +12,14 @@
 
 ## ⚠️ Please read this first
 
-**This is not my work. Not even a little bit.**
+**This is a fork, not an original implementation.**
 
-This repository is a fork of the original
+This repository is based on
 [`Ashutosh00710/github-readme-activity-graph`](https://github.com/Ashutosh00710/github-readme-activity-graph)
-by **Ashutosh Dwivedi**. Every meaningful line of code, every feature, every
-theme, and the whole idea behind this project belong to him and the original
-contributors. I did not write this. I am not claiming credit for it.
+by **Ashutosh Dwivedi**. The graph generator, themes, core behavior, and original
+project idea come from him and the upstream contributors. This fork adds a few
+hosting and maintenance adaptations, documented below; it does not claim credit
+for the upstream work.
 
 ### Why does this fork exist at all?
 
@@ -28,11 +29,27 @@ original and I don't like the new ones. So instead of switching to a different
 alternate fork, I spun up my own deployment from this fork so I could keep using
 the thing I actually enjoy.
 
-That's the entire reason this repository exists. Nothing more, nothing less.
+That's why this repository exists: to keep a personal deployment of the
+original project available, not to replace or rebrand the upstream project.
 
-If you want the real thing, the real author, or the real project, go to the
-original repository linked above. This fork exists only so my own deployment
-keeps running.
+### What changed in this fork?
+
+The graph features and themes remain the upstream project's. Fork-specific
+changes are focused on hosting and maintenance:
+
+- **Vercel hosting:** the Express app can run as a serverless function, with
+  Vercel build and route configuration for the personal deployment.
+- **Serverless module resolution:** `node-chartist` is loaded through package
+  resolution rather than fragile paths into `node_modules`.
+- **GitHub API diagnostics:** authentication, rate-limit, and other API failures
+  are reported distinctly instead of all being described as an incorrect
+  username.
+- **Safer error handling:** fallback SVG text is XML-escaped, and request logs
+  omit Axios request details that could contain authorization headers.
+
+These changes do not alter the origin or ownership of the core graph project.
+For the upstream project and its full history, see the original repository
+linked above.
 
 ---
 
